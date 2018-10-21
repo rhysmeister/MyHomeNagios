@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e;
+set -u;
+set -o pipefail;
+
+function finish {
+  s=$?;
+  if [ $s -eq 0 ]; then
+    touch nagios_build_script.success && rm -Rf nagios_build_script.failed;
+  else
+    echo $s > nagios_build_script.failed && rm -Rf nagios_build_script.success;
+  fi;
+}
+trap finish EXIT;
+
+cd {{ nagios_source_download_dir }};
+tar xzf {{ nagios_source_download_dir | basename }};
+cd {{ nagios_source_download_dir | basename | replace('.tar.gz', '') }};
+./configure --with-httpd-conf=/etc/apache2/sites-enabled
+make all
+make install
+make install-init
+make install-commandmode
+make install-config
+make install-webconf

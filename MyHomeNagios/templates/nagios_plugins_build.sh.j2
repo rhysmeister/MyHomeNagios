@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e;
+set -u;
+set -o pipefail;
+
+function finish {
+  s=$?;
+  if [ $s -eq 0 ]; then
+    touch nagios_plugins_build.success && rm -Rf nagios_plugins_build.failed;
+  else
+    echo $s > nagios_plugins_build.failed && rm -Rf nagios_plugins_build.success;
+  fi;
+}
+trap finish EXIT;
+
+cd {{ nagios_source_download_dir }};
+tar  xzf {{ nagios_plugins_download_url | basename }};
+cd {{ nagios_plugins_download_url | basename | replace('.tar.gz', '') }};
+./tools/setup
+./configure
+make
+make install

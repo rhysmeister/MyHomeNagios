@@ -1,2 +1,14 @@
 ---
 # handlers file for MyHomeNagios
+  - name: Reboot host
+    reboot:
+
+  - name: Restart Apache
+    service:
+      name: apache2
+      state: restarted
+
+  - name: Restart Nagios
+    service:
+      name: nagios
+      state: restarted

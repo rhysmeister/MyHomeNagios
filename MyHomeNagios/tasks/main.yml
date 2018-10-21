@@ -1,2 +1,162 @@
 ---
 # tasks file for MyHomeNagios
+  - name: Run apt update
+    apt:
+      upgrade: yes
+      update_cache: yes
+      cache_valid_time: 86400
+    notify: Reboot host
+
+  - name: Ensure utilities are installed
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ required_utilities }}"
+
+  - name: Ensure Apache and PHP7 are installed
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_itmes:
+      - apache2
+      - libapache2-mod-php7.0
+      - php7.0
+
+  - name: Ensure Apache is started
+    service:
+      name: apache2
+      state: started
+
+  - name: Ensure required ports are open
+    firewalld:
+      service: "{{ item }}"
+      permanent: true
+      state: enabled
+    with_items:
+      - https
+      - http
+
+  - name: Ensure apache modules are enabled
+    apache2_module:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - rewrite
+      - headers
+      - cgi
+      - ssl
+    notify:
+      - Restart Apache
+
+  - name: Configure PHP
+    lineinfile:
+      path: /etc/php/7.0/apache2/php.ini
+      line: "date.timezone = Europe/London"
+      regexp: "^date\.timezone"
+    notify:
+      - Restart Apache
+
+  - name: Ensure Apache SSL Site config is enabled
+    shell: a2ensite default-ssl.conf && touch default-ssl.conf.success
+    args:
+      creates: default-ssl.conf.success
+
+  - name: Configure ssl for apache
+    blockinfile:
+      path: /etc/apache2/sites-enabled/000-default.conf
+      block: |
+        RewriteEngine on
+        RewriteCond %{HTTPS} off
+        RewriteRule ^(.*) https://%{HTTP_HOST}/$1
+
+  - name: Ensure phpinfo page exists
+    copy:
+      content: '<?php phpinfo(); ?>'
+      dest: /var/www/html/info.php
+
+  - name: CHeck the info.php page functions
+     uri:
+       url: "http://{{ ansible_hostanme }}/info.php"
+       status_code: 200
+     register: result
+     until: result.status == 200
+     retries: 60
+     delay: 1
+
+  - name: Ensure tools for nagios compilation are installed
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_itmes:
+      - "{{ nagios_build_tools }}"
+
+  - name: Ensure nagios group exists
+    group:
+      name: nagios
+      state: present
+
+  - name: Ensure Nagios user exists
+    user:
+      name: nagios
+      group: nagios
+      groups: www-data
+
+  - name: Download nagios source
+    get_uri:
+      url: "{{ nagios_source_url }}"
+      dest: "{{ nagios_source_download_dir }}"
+
+  - name: Template out nagios_build_script.sh to the server
+    template:
+      src: nagios_build_script.sh.j2
+      dest: "{{ nagios_source_download_dir }}/nagios_build_script.sh"
+      mode: 0700
+
+  - name: Execute nagios build script if required
+    shell: "{{ nagios_source_download_dir }}/nagios_build_script.sh"
+    args:
+      creates: nagios_build_script.success
+
+  - name: Ensure nagios service is started
+    service:
+      name: nagios
+      state: started
+      enabled: yes
+
+  - name: Ensure nagios admin user exists
+    htpasswd:
+      path: /usr/local/nagios/etc/htpasswd.users
+      name: nagiosadmin
+      password: "{{ secret_nagios_password }}"
+
+  - name: Wait for nagios to listen on port 80
+    wait_for:
+      port: 80
+      delay: 10
+
+  - name: Ensure tools for building nagios checks are installed
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - "{{ nagios_check_build_tools }}"
+
+  - name: Download nagios plugins source
+    get_uri:
+      url: nagios_plugins_download_url
+      dest: "{{ nagios_source_download_dir }}"
+
+  - name: Template out nagios_plugins_build.sh to the server
+    template:
+      src: nagios_plugins_build.sh.j2
+      dest: "{{ nagios_source_download_dir }}/nagios_plugins_build.sh"
+      mode: 0700
+
+  - name: Execute nagios build script if required
+    shell: "{{ nagios_source_download_dir }}/nagios_plugins_build.sh"
+    args:
+      creates: nagios_pluginsd_build.success
+    notify:
+      - Restart Nagios
+
+  

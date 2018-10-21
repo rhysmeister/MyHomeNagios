@@ -1,2 +1,32 @@
 ---
 # vars file for MyHomeNagios
+  required_utilities:
+    - wget
+    - unzip
+    - zip
+    - net-tools
+    - bash-completion
+  nagios_build_tools:
+    - autoconf
+    - gcc
+    - libc6
+    - make
+    - apache2-utils
+    - libgd-dev
+  nagios_source_url: https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.2.tar.gz
+  nagios_source_download_dir: /home/pi
+  nagios_check_build_tools:
+    - libmcrypt-dev
+    - libssl-dev
+    - bc
+    - gawk
+    - dc
+    - build-essential
+    - snmp
+    - libnet-snmp-perl
+    - gettext
+    - libldap2-dev
+    - smbclient
+    - fping
+    - default-libmysqlclient-dev
+  nagios_plugins_download_url: https://nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
