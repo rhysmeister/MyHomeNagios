@@ -10,7 +10,7 @@ Install Nagios, plugins and associated software and configures some basic checks
 https://www.howtoforge.com/tutorial/install-nagios-4-3-on-debian-9/
  1. Run apt update and apt upgrade.
  2. Reboot if needed.
- 3. Ensure required untilities are installed, i.e. wget unzip zip net-tools.
+ 3. Ensure required utilities are installed, i.e. wget unzip zip net-tools.
  4. Install Apache and PHP7.
  5. Configure firewall to allow http and https traffic.
  6. Enable Apache modules. (inc ssl)
@@ -29,6 +29,7 @@ https://www.howtoforge.com/tutorial/install-nagios-4-3-on-debian-9/
 19. Download Nagios Plugins source.
 20. Execute Nagios Plugins custom build script if required.
 21. Add Nagios Config files and restart Nagios if needed.
+22. Install script to auto-launch browser to full screen at Nagios home page.
 
 Requirements
 ------------
