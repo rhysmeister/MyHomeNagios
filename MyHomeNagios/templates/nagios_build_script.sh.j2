@@ -7,6 +7,7 @@ function finish {
   s=$?;
   if [ $s -eq 0 ]; then
     touch /home/pi/nagios_build_script.success && rm -Rf /home/pi/nagios_build_script.failed;
+    echo "Status code: $?";
     exit $s;
   else
     echo $s > /home/pi/nagios_build_script.failed && rm -Rf /home/pi/nagios_build_script.success;
