@@ -9,7 +9,7 @@ Install Nagios, plugins and associated software and configures some basic checks
 
 https://www.howtoforge.com/tutorial/install-nagios-4-3-on-debian-9/
  1. Run apt update and apt upgrade.
- 2. Reboot if needed.
+ 2. Reboot if needed. (handler)
  3. Ensure required utilities are installed, i.e. wget unzip zip net-tools.
  4. Install Apache and PHP7.
  5. Configure firewall to allow http and https traffic.
@@ -17,23 +17,24 @@ https://www.howtoforge.com/tutorial/install-nagios-4-3-on-debian-9/
  7. Restart Apache if needed (handler?)
  8. Configure PHP.
  9. Restart Apache if needed (handler?)
-10. COnfigure SSL and restart apache if needed.
+10. Configure SSL and restart apache if needed.
 11. Install tools to compile Nagios from source: autoconf gcc libc6 make apache2-utils libgd-dev.
 12. Ensure nagios Linux System user exists.
 13. Download Nagios source.
 14. Execute Nagios shell script, custom bash script to build Nagios, if required.
-15. Execute custom shell script to create the nagiosadmin http user if required.
-16. Ensure Nagios server starts.
+15. Ensure Nagios service starts and enabled on boot.
+16. Create nagiosadmin http user if required.
 17. Using waitfor... wait for the Nagios Server page to be loaded.
-18. Ensure libararies for compiling Nagios plugins are insatlled. i.e. libmcrypt-dev make libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext libldap2-dev smbclient fping default-libmysqlclient-dev
+18. Ensure libararies for compiling Nagios plugins are installed. i.e. libmcrypt-dev make libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext libldap2-dev smbclient fping default-libmysqlclient-dev
 19. Download Nagios Plugins source.
 20. Execute Nagios Plugins custom build script if required.
-21. Add Nagios Config files and restart Nagios if needed.
-22. Install script to auto-launch browser to full screen at Nagios home page.
+21. Add Nagios Config files and restart Nagios if needed. - TODO
+22. Install script to auto-launch browser to full screen at Nagios home page. - TODO
 
 Requirements
 ------------
 
+- Ansible 2.7+
 - Raspian 9.4 Linux plex 4.14.34-v7+ #1110 SMP Mon Apr 16 15:18:51 BST 2018 armv7l GNU/Linux
 
 
@@ -50,11 +51,7 @@ A list of other roles hosted on Galaxy should go here, plus any details in regar
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+ansible-playbook -i inventory nagios.yml -u pi --ask-vault-pass
 
 License
 -------
