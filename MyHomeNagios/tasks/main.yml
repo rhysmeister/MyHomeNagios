@@ -186,6 +186,6 @@
   - name: Execute nagios build script if required
     shell: "{{ nagios_source_download_dir }}/nagios_plugins_build.sh"
     args:
-      creates: nagios_pluginsd_build.success
+      creates: /home/pi/nagios_plugins_build.success
     notify:
       - Restart Nagios
