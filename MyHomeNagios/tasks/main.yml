@@ -17,7 +17,7 @@
     apt:
       name: "{{ item }}"
       state: present
-    with_itmes:
+    with_items:
       - apache2
       - libapache2-mod-php7.0
       - php7.0
@@ -52,7 +52,7 @@
     lineinfile:
       path: /etc/php/7.0/apache2/php.ini
       line: "date.timezone = Europe/London"
-      regexp: "^date\.timezone"
+      regexp: "^date.timezone"
     notify:
       - Restart Apache
 
@@ -74,20 +74,20 @@
       content: '<?php phpinfo(); ?>'
       dest: /var/www/html/info.php
 
-  - name: CHeck the info.php page functions
-     uri:
-       url: "http://{{ ansible_hostanme }}/info.php"
-       status_code: 200
-     register: result
-     until: result.status == 200
-     retries: 60
-     delay: 1
+  - name: Check the info.php page functions
+    uri:
+      url: "http://{{ ansible_hostname }}/info.php"
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 60
+    delay: 1
 
   - name: Ensure tools for nagios compilation are installed
     apt:
       name: "{{ item }}"
       state: present
-    with_itmes:
+    with_items:
       - "{{ nagios_build_tools }}"
 
   - name: Ensure nagios group exists
@@ -102,7 +102,7 @@
       groups: www-data
 
   - name: Download nagios source
-    get_uri:
+    uri:
       url: "{{ nagios_source_url }}"
       dest: "{{ nagios_source_download_dir }}"
 
@@ -142,7 +142,7 @@
       - "{{ nagios_check_build_tools }}"
 
   - name: Download nagios plugins source
-    get_uri:
+    uri:
       url: nagios_plugins_download_url
       dest: "{{ nagios_source_download_dir }}"
 
@@ -158,5 +158,3 @@
       creates: nagios_pluginsd_build.success
     notify:
       - Restart Nagios
-
-  
