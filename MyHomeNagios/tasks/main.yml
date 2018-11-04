@@ -1,5 +1,9 @@
 ---
 # tasks file for MyHomeNagios
+  - name: Include vault vars
+    include_vars:
+      file: vault.yml
+
   - name: Run apt update
     apt:
       upgrade: yes
