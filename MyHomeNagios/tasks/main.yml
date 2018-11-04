@@ -39,6 +39,11 @@
       name: python-pip
       state: present
 
+  - name: Ensure passlib python library is installed
+    pip:
+      name: passlib[bcrypt]
+      state: present
+
   - name: Ensure Apache and PHP7 are installed
     apt:
       name: "{{ item }}"
@@ -139,7 +144,7 @@
       mode: 0700
 
   - name: Execute nagios build script if required
-    shell: "{{ nagios_source_download_dir }}/nagios_build_script.sh"
+    shell: "{{ nagios_source_download_dir }}/nagios_build_script.sh > /home/pi/nagios_build_script.log  2>&1"
     args:
       creates: nagios_build_script.success
 
@@ -169,7 +174,7 @@
 
   - name: Download nagios plugins source
     uri:
-      url: nagios_plugins_download_url
+      url: "{{ nagios_plugins_download_url }}"
       dest: "{{ nagios_source_download_dir }}"
 
   - name: Template out nagios_plugins_build.sh to the server
