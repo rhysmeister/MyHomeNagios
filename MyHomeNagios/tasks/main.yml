@@ -128,7 +128,7 @@
       groups: www-data
 
   - name: Download nagios source
-    uri:
+    get_url:
       url: "{{ nagios_source_url }}"
       dest: "{{ nagios_source_download_dir }}"
 
