@@ -6,9 +6,10 @@ set -o pipefail;
 function finish {
   s=$?;
   if [ $s -eq 0 ]; then
-    touch nagios_build_script.success && rm -Rf nagios_build_script.failed;
+    touch /home/pi/nagios_build_script.success && rm -Rf /home/pi/nagios_build_script.failed;
+    exit $s;
   else
-    echo $s > nagios_build_script.failed && rm -Rf nagios_build_script.success;
+    echo $s > /home/pi/nagios_build_script.failed && rm -Rf /home/pi/nagios_build_script.success;
   fi;
 }
 trap finish EXIT;
