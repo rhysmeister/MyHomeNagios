@@ -173,7 +173,7 @@
       - "{{ nagios_check_build_tools }}"
 
   - name: Download nagios plugins source
-    uri:
+    get_url:
       url: "{{ nagios_plugins_download_url }}"
       dest: "{{ nagios_source_download_dir }}"
 
