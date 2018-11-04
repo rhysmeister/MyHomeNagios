@@ -146,7 +146,7 @@
   - name: Execute nagios build script if required
     shell: "{{ nagios_source_download_dir }}/nagios_build_script.sh > /home/pi/nagios_build_script.log  2>&1"
     args:
-      creates: nagios_build_script.success
+      creates: /hone/pi/nagios_build_script.success
 
   - name: Ensure nagios service is started
     service:
