@@ -6,6 +6,8 @@
     - zip
     - net-tools
     - bash-completion
+    - python-dev
+    - libffi-dev 
   nagios_build_tools:
     - autoconf
     - gcc
