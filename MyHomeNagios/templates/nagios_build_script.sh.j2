@@ -14,8 +14,8 @@ function finish {
 trap finish EXIT;
 
 cd {{ nagios_source_download_dir }};
-tar xzf {{ nagios_source_download_dir | basename }};
-cd {{ nagios_source_download_dir | basename | replace('.tar.gz', '') }};
+tar xzf {{ nagios_source_url | basename }};
+cd {{ nagios_source_url | basename | replace('.tar.gz', '') }};
 ./configure --with-httpd-conf=/etc/apache2/sites-enabled
 make all
 make install
